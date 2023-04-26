@@ -39,7 +39,7 @@ function createPointTemplate() {
         </button>
       </div>
     </li>`
-  )
+  );
 }
 
 export default class PointView {

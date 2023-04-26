@@ -157,7 +157,7 @@ function createEditPointTemplate() {
         </section>
       </form>
     </li>`
-  )
+  );
 }
 
 export default class EditPointView {

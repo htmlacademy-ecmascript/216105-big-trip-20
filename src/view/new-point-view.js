@@ -164,7 +164,7 @@ function createNewPointTemplate() {
         </section>
       </form>
     </li>`
-  )
+  );
 }
 
 export default class NewPointView {
