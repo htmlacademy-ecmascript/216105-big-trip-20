@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Полина Коркина](https://up.htmlacademy.ru/ecmascript/20/user/216105).
-* Наставник: `Неизвестно`.
+* Наставник: [Александр Конотоп](https://htmlacademy.ru/profile/sineway).
 
 ---
 
