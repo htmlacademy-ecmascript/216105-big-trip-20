@@ -4,6 +4,8 @@ import FilterView from './view/filter-view.js';
 import SortView from './view/sort-view.js';
 import TripPresenter from './presenter/trip-presenter.js';
 
+// import getRandomPoint from './mock/points.js';
+
 const tripMainElement = document.querySelector('.trip-main');
 const filtersElement = document.querySelector('.trip-controls__filters');
 const tripEventsElement = document.querySelector('.trip-events');
@@ -14,3 +16,5 @@ render(new FilterView(), filtersElement);
 render(new SortView(), tripEventsElement);
 
 tripPresenter.init();
+
+// console.log(getRandomPoint());
