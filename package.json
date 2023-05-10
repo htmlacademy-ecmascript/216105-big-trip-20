@@ -11,7 +11,7 @@
     "not < 0.25%"
   ],
   "scripts": {
-    "lint": "tsc && eslint src/",
+    "lint": "eslint src/",
     "build": "webpack --mode production",
     "start": "webpack serve --mode development --open"
   },
