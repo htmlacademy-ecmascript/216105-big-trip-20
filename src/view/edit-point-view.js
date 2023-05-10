@@ -1,8 +1,6 @@
 import {createElement} from '../render.js';
-import {POINT_TYPES} from '../consts.js';
+import {POINT_TYPES, BLANK_POINT} from '../consts.js';
 import {humanizeEditPointTime, capitalizeFirstLetter} from '../utils.js';
-// import {getDestinationsList, getDestinationById} from '../mock/destinations.js';
-// import {getOffersList} from '../mock/offers.js';
 
 function createEventSelectionTemplate(chosenType) {
   return (/*html*/
@@ -26,20 +24,14 @@ function createEventSelectionTemplate(chosenType) {
   );
 }
 
-function createOffersListTemplate(allOffers, chosenOffers, type) {
-  const typeOffers = allOffers.find((offer) => offer.type === type).offers;
-
-  if (!typeOffers) {
-    return '';
-  }
-
+function createOffersListTemplate(allOffers, chosenOffersIds) {
   return (/*html*/
     `<section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
       <div class="event__available-offers">
-        ${typeOffers.map((offer) => `<div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" type="checkbox" name="event-offer-${offer.id}" ${chosenOffers.includes(offer.id) ? 'checked' : ''}>
+        ${allOffers.map((offer) => `<div class="event__offer-selector">
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" type="checkbox" name="event-offer-${offer.id}" ${chosenOffersIds.includes(offer.id) ? 'checked' : ''}>
           <label class="event__offer-label" for="event-offer-${offer.id}-1">
             <span class="event__offer-title">${offer.title}</span>
             &plus;&euro;&nbsp;
@@ -51,41 +43,38 @@ function createOffersListTemplate(allOffers, chosenOffers, type) {
   );
 }
 
-function createDestinationTemplate(destinationsList, destination) {
-  if (!destination) {
-    return '';
-  }
-
-  destination = destinationsList.find((item) => item.id === destination);
-
+function createDestinationTemplate(chosenDestination) {
   return (/*html*/
     `<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${destination.description}</p>
-      ${destination.pictures && destination.pictures.length ? `<div class="event__photos-tape">
-          ${destination.pictures.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join('')}
-        </div>` : ''}
+      <p class="event__destination-description">${chosenDestination.description}</p>
+      ${chosenDestination.pictures?.length ? `<div class="event__photos-tape">
+        ${chosenDestination.pictures.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join('')}
+      </div>` : ''}
     </section>`
   );
 }
 
-function createEditPointTemplate(point, offersList, destinationsList) {
-  const {dateFrom, dateTo, type, destination, basePrice, offers} = point;
-  const destinationName = destinationsList.find((item) => item.id === destination).name;
+function createEditPointTemplate(point, allOffers, allDestinations, chosenDestination) {
+  const {
+    dateFrom, dateTo, type,
+    basePrice, offers: chosenOffersIds
+  } = point;
 
   return (/*html*/
     `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
         <header class="event__header">
+
           ${createEventSelectionTemplate(type)}
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
               ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationName}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${chosenDestination.name}" list="destination-list-1">
             <datalist id="destination-list-1">
-              ${destinationsList.map((destinationsItem) => `<option value="${destinationsItem.name}"></option>`).join('')}
+              ${allDestinations.map((destinationItem) => `<option value="${destinationItem.name}"></option>`).join('')}
             </datalist>
           </div>
 
@@ -112,8 +101,11 @@ function createEditPointTemplate(point, offersList, destinationsList) {
           </button>
         </header>
         <section class="event__details">
-          ${createOffersListTemplate(offersList, offers, type)}
-          ${createDestinationTemplate(destinationsList, destination)}
+
+          ${allOffers ? createOffersListTemplate(allOffers, chosenOffersIds) : ''}
+
+          ${chosenDestination ? createDestinationTemplate(chosenDestination) : ''}
+
         </section>
       </form>
     </li>`
@@ -121,14 +113,15 @@ function createEditPointTemplate(point, offersList, destinationsList) {
 }
 
 export default class EditPointView {
-  constructor(point, offers, destinations) {
+  constructor(point = BLANK_POINT, allOffers, allDestinations, chosenDestination) {
     this.point = point;
-    this.offers = offers;
-    this.destinations = destinations;
+    this.allOffers = allOffers;
+    this.allDestinations = allDestinations;
+    this.chosenDestination = chosenDestination;
   }
 
   getTemplate() {
-    return createEditPointTemplate(this.point, this.offers, this.destinations);
+    return createEditPointTemplate(this.point, this.allOffers, this.allDestinations, this.chosenDestination);
   }
 
   getElement() {

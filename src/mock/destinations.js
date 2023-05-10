@@ -1,6 +1,6 @@
-import {getRandomArrayElement} from '../utils.js';
+import {getRandomArrayElement} from './utils.js';
 
-const picturePlaceholderUrl = 'https://place-hold.it/300x200/';
+const PICTURE_PLACEHOLDER_URL = 'https://place-hold.it/300x200/';
 
 const mockDestinations = [
   {
@@ -9,11 +9,11 @@ const mockDestinations = [
     'name': 'Chamonix',
     'pictures': [
       {
-        'src': picturePlaceholderUrl,
+        'src': PICTURE_PLACEHOLDER_URL,
         'description': 'Chamonix parliament building'
       },
       {
-        'src': picturePlaceholderUrl,
+        'src': PICTURE_PLACEHOLDER_URL,
         'description': 'Chamonix parliament building'
       }
     ]
@@ -24,7 +24,7 @@ const mockDestinations = [
     'name': 'Geneva',
     'pictures': [
       {
-        'src': picturePlaceholderUrl,
+        'src': PICTURE_PLACEHOLDER_URL,
         'description': 'Geneva img test desc'
       }
     ]

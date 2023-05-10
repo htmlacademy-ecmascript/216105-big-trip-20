@@ -1,12 +1,15 @@
-import {mockDestinations} from '../mock/destinations.js';
-
-
 export default class DestinationsModel {
-  getDestinationsList() {
-    return mockDestinations;
+  constructor(service) {
+    this.service = service;
+    this.destinations = this.service.getDestinations();
   }
 
-  getDestinationById(id) {
-    return mockDestinations.find((destination) => destination.id === id);
+  get() {
+    return this.destinations;
+  }
+
+  getById(id) {
+    return this.destinations
+      .find((destination) => destination.id === id);
   }
 }

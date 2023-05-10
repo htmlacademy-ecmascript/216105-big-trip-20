@@ -33,6 +33,10 @@ const mockOffers = [
         'price': 15
       }
     ]
+  },
+  {
+    'type': 'check-in',
+    'offers': []
   }
 ];
 
