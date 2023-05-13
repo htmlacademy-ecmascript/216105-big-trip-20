@@ -4,51 +4,56 @@ import EditPointView from '../view/edit-point-view';
 import PointView from '../view/point-view.js';
 
 export default class TripPresenter {
-  tripComponent = new TripView();
+  #points = [];
+  #tripComponent = new TripView();
+  #tripContainer = null;
+  #pointsModel = null;
+  #offersModel = null;
+  #destinationsModel = null;
 
   constructor({tripContainer, pointsModel, offersModel, destinationsModel}) {
-    this.tripContainer = tripContainer;
-    this.pointsModel = pointsModel;
-    this.offersModel = offersModel;
-    this.destinationsModel = destinationsModel;
+    this.#tripContainer = tripContainer;
+    this.#pointsModel = pointsModel;
+    this.#offersModel = offersModel;
+    this.#destinationsModel = destinationsModel;
   }
 
   init() {
-    this.points = [...this.pointsModel.get()];
+    this.#points = [...this.#pointsModel.points];
 
-    render(this.tripComponent, this.tripContainer);
+    render(this.#tripComponent, this.#tripContainer);
 
     render(
       new EditPointView(
-        this.points[0],
-        this._getOffersByType(this.points[0]),
-        this.destinationsModel.get(),
-        this._getDestinationById(this.points[0].destination),
+        this.#points[0],
+        this.#getOffersByType(this.#points[0]),
+        this.#destinationsModel.destinations,
+        this.#getDestinationById(this.#points[0].destination),
       ),
-      this.tripComponent.element
+      this.#tripComponent.element
     );
 
-    this.points.forEach((point) => {
+    this.#points.forEach((point) => {
       render(
         new PointView(
           point,
-          this._getOffersByIdsAndType(point),
-          this._getDestinationById(point.destination)
+          this.#getOffersByIdsAndType(point),
+          this.#getDestinationById(point.destination)
         ),
-        this.tripComponent.element
+        this.#tripComponent.element
       );
     });
   }
 
-  _getOffersByType({type}) {
-    return this.offersModel.getByType(type);
+  #getOffersByType({type}) {
+    return this.#offersModel.getByType(type);
   }
 
-  _getOffersByIdsAndType({offers: ids, type}) {
-    return this.offersModel.getByIdsAndType(ids, type);
+  #getOffersByIdsAndType({offers: ids, type}) {
+    return this.#offersModel.getByIdsAndType(ids, type);
   }
 
-  _getDestinationById(id) {
-    return this.destinationsModel.getById(id);
+  #getDestinationById(id) {
+    return this.#destinationsModel.getById(id);
   }
 }
