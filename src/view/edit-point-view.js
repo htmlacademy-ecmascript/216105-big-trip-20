@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import {POINT_TYPES, BLANK_POINT} from '../consts.js';
 import {humanizeEditPointTime, capitalizeFirstLetter} from '../utils.js';
 
@@ -112,27 +112,16 @@ function createEditPointTemplate(point, allOffers, allDestinations, chosenDestin
   );
 }
 
-export default class EditPointView {
+export default class EditPointView extends AbstractView {
   constructor(point = BLANK_POINT, allOffers, allDestinations, chosenDestination) {
+    super();
     this.point = point;
     this.allOffers = allOffers;
     this.allDestinations = allDestinations;
     this.chosenDestination = chosenDestination;
   }
 
-  getTemplate() {
+  get template() {
     return createEditPointTemplate(this.point, this.allOffers, this.allDestinations, this.chosenDestination);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

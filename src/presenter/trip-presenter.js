@@ -1,4 +1,4 @@
-import {render} from '../render.js';
+import {render} from '../framework/render.js';
 import TripView from '../view/trip-view';
 import EditPointView from '../view/edit-point-view';
 import PointView from '../view/point-view.js';
@@ -25,7 +25,7 @@ export default class TripPresenter {
         this.destinationsModel.get(),
         this._getDestinationById(this.points[0].destination),
       ),
-      this.tripComponent.getElement()
+      this.tripComponent.element
     );
 
     this.points.forEach((point) => {
@@ -35,7 +35,7 @@ export default class TripPresenter {
           this._getOffersByIdsAndType(point),
           this._getDestinationById(point.destination)
         ),
-        this.tripComponent.getElement()
+        this.tripComponent.element
       );
     });
   }
