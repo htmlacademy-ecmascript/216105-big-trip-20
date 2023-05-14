@@ -1,10 +1,10 @@
 import {render, RenderPosition} from './framework/render.js';
 
 import TripInfoView from './view/trip-info-view.js';
-import FilterView from './view/filter-view.js';
 import SortView from './view/sort-view.js';
 
 import TripPresenter from './presenter/trip-presenter.js';
+import FilterPresenter from './presenter/filter-presenter.js';
 
 import MockService from './service/mock-service.js';
 import PointsModel from './model/points-model.js';
@@ -20,6 +20,11 @@ const pointsModel = new PointsModel(mockService);
 const offersModel = new OffersModel(mockService);
 const destinationsModel = new DestinationsModel(mockService);
 
+const filterPresenter = new FilterPresenter({
+  container: filtersElement,
+  pointsModel
+});
+
 const tripPresenter = new TripPresenter({
   tripContainer: tripEventsElement,
   pointsModel,
@@ -28,7 +33,7 @@ const tripPresenter = new TripPresenter({
 });
 
 render(new TripInfoView(), tripMainElement, RenderPosition.AFTERBEGIN);
-render(new FilterView(), filtersElement);
 render(new SortView(), tripEventsElement);
 
+filterPresenter.init();
 tripPresenter.init();

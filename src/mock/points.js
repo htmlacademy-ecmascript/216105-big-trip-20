@@ -26,8 +26,8 @@ const mockPoints = [
   {
     'id': 3,
     'basePrice': 160,
-    'dateFrom': '2023-05-10T22:00:00.000Z',
-    'dateTo': '2023-05-11T02:20:00.000Z',
+    'dateFrom': '2023-05-21T22:00:00.000Z',
+    'dateTo': '2023-05-23T02:20:00.000Z',
     'destination': getRandomDestination(),
     'isFavorite': false,
     'offers': getRandomOffers('flight'),
@@ -36,8 +36,8 @@ const mockPoints = [
   {
     'id': 4,
     'basePrice': 180,
-    'dateFrom': '2023-05-12T12:00:00.000Z',
-    'dateTo': '2023-05-13T14:40:00.000Z',
+    'dateFrom': '2023-05-14T12:00:00.000Z',
+    'dateTo': '2023-05-15T14:40:00.000Z',
     'destination': getRandomDestination(),
     'isFavorite': true,
     'offers': getRandomOffers('flight'),

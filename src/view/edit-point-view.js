@@ -1,6 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import {POINT_TYPES, BLANK_POINT} from '../consts.js';
-import {humanizeEditPointTime, capitalizeFirstLetter} from '../utils.js';
+import {humanizeEditPointTime} from '../utils/point.js';
+import {capitalizeFirstLetter} from '../utils/common.js';
 
 function createEventSelectionTemplate(chosenType) {
   return (/*html*/

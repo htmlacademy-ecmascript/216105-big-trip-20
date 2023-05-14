@@ -12,4 +12,18 @@ const BLANK_POINT = {
   type: DEFAULT_TYPE
 };
 
-export {POINT_TYPES, BLANK_POINT};
+const FilterType = {
+  EVERYTHING: 'everything',
+  PAST: 'past',
+  PRESENT: 'present',
+  FUTURE: 'future'
+};
+
+const NoPointsMessage = {
+  EVERYTHING: 'Click New Event to create your first point',
+  PAST: 'There are no past events now',
+  PRESENT: 'There are no present events now',
+  FUTURE: 'There are no future events now'
+};
+
+export {POINT_TYPES, BLANK_POINT, NoPointsMessage, FilterType};

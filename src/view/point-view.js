@@ -3,7 +3,7 @@ import {
   humanizePointDay,
   humanizePointTime,
   getPointDuration
-} from '../utils.js';
+} from '../utils/point.js';
 
 function createOffersTemplate(pointOffers) {
   return pointOffers.length ? (
