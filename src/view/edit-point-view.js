@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import {POINT_TYPES, BLANK_POINT} from '../consts.js';
 import {humanizeEditPointTime, capitalizeFirstLetter} from '../utils.js';
 
@@ -55,7 +55,9 @@ function createDestinationTemplate(chosenDestination) {
   );
 }
 
-function createEditPointTemplate(point, allOffers, allDestinations, chosenDestination) {
+function createEditPointTemplate({
+  point, allOffers, allDestinations, chosenDestination
+}) {
   const {
     dateFrom, dateTo, type,
     basePrice, offers: chosenOffersIds
@@ -112,27 +114,49 @@ function createEditPointTemplate(point, allOffers, allDestinations, chosenDestin
   );
 }
 
-export default class EditPointView {
-  constructor(point = BLANK_POINT, allOffers, allDestinations, chosenDestination) {
-    this.point = point;
-    this.allOffers = allOffers;
-    this.allDestinations = allDestinations;
-    this.chosenDestination = chosenDestination;
+export default class EditPointView extends AbstractView {
+  #point = null;
+  #allOffers = null;
+  #allDestinations = null;
+  #chosenDestination = null;
+  #handleResetClick = null;
+  #handleFormSubmit = null;
+
+  constructor({
+    point = BLANK_POINT, allOffers, allDestinations,
+    chosenDestination, onResetClick, onFormSubmit
+  }) {
+    super();
+    this.#point = point;
+    this.#allOffers = allOffers;
+    this.#allDestinations = allDestinations;
+    this.#chosenDestination = chosenDestination;
+
+    this.#handleResetClick = onResetClick;
+    this.#handleFormSubmit = onFormSubmit;
+
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#resetClickHandler);
+    this.element.querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
   }
 
-  getTemplate() {
-    return createEditPointTemplate(this.point, this.allOffers, this.allDestinations, this.chosenDestination);
+  get template() {
+    return createEditPointTemplate({
+      point: this.#point,
+      allOffers: this.#allOffers,
+      allDestinations: this.#allDestinations,
+      chosenDestination: this.#chosenDestination
+    });
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
+  #resetClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleResetClick();
+  };
 
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 }
