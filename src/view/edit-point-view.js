@@ -55,7 +55,9 @@ function createDestinationTemplate(chosenDestination) {
   );
 }
 
-function createEditPointTemplate(point, allOffers, allDestinations, chosenDestination) {
+function createEditPointTemplate({
+  point, allOffers, allDestinations, chosenDestination
+}) {
   const {
     dateFrom, dateTo, type,
     basePrice, offers: chosenOffersIds
@@ -117,16 +119,44 @@ export default class EditPointView extends AbstractView {
   #allOffers = null;
   #allDestinations = null;
   #chosenDestination = null;
+  #handleResetClick = null;
+  #handleFormSubmit = null;
 
-  constructor(point = BLANK_POINT, allOffers, allDestinations, chosenDestination) {
+  constructor({
+    point = BLANK_POINT, allOffers, allDestinations,
+    chosenDestination, onResetClick, onFormSubmit
+  }) {
     super();
     this.#point = point;
     this.#allOffers = allOffers;
     this.#allDestinations = allDestinations;
     this.#chosenDestination = chosenDestination;
+
+    this.#handleResetClick = onResetClick;
+    this.#handleFormSubmit = onFormSubmit;
+
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#resetClickHandler);
+    this.element.querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
   }
 
   get template() {
-    return createEditPointTemplate(this.#point, this.#allOffers, this.#allDestinations, this.#chosenDestination);
+    return createEditPointTemplate({
+      point: this.#point,
+      allOffers: this.#allOffers,
+      allDestinations: this.#allDestinations,
+      chosenDestination: this.#chosenDestination
+    });
   }
+
+  #resetClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleResetClick();
+  };
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 }

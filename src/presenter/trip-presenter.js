@@ -1,4 +1,4 @@
-import {render} from '../framework/render.js';
+import {render, replace} from '../framework/render.js';
 import TripView from '../view/trip-view';
 import EditPointView from '../view/edit-point-view';
 import PointView from '../view/point-view.js';
@@ -23,37 +23,59 @@ export default class TripPresenter {
 
     render(this.#tripComponent, this.#tripContainer);
 
-    render(
-      new EditPointView(
-        this.#points[0],
-        this.#getOffersByType(this.#points[0]),
-        this.#destinationsModel.destinations,
-        this.#getDestinationById(this.#points[0].destination),
-      ),
-      this.#tripComponent.element
-    );
-
     this.#points.forEach((point) => {
-      render(
-        new PointView(
-          point,
-          this.#getOffersByIdsAndType(point),
-          this.#getDestinationById(point.destination)
-        ),
-        this.#tripComponent.element
-      );
+      this.#renderPoint(point);
     });
   }
 
-  #getOffersByType({type}) {
-    return this.#offersModel.getByType(type);
-  }
+  #renderPoint(point) {
+    const escKeyDownHandler = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceFormToPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    };
 
-  #getOffersByIdsAndType({offers: ids, type}) {
-    return this.#offersModel.getByIdsAndType(ids, type);
-  }
+    const pointComponent = new PointView({
+      point,
+      pointOffers: this.#offersModel.getByIdsAndType(point),
+      pointDestination: this.#destinationsModel.getById(point.destination),
+      onEditClick: pointEditClickHandler
+    });
 
-  #getDestinationById(id) {
-    return this.#destinationsModel.getById(id);
+    const pointEditComponent = new EditPointView({
+      point,
+      allOffers: this.#offersModel.getByType(point.type),
+      allDestinations: this.#destinationsModel.destinations,
+      chosenDestination: this.#destinationsModel.getById(point.destination),
+      onResetClick: resetButtonClickHandler,
+      onFormSubmit: pointSubmitHandler
+    });
+
+    function replacePointToForm() {
+      replace(pointEditComponent, pointComponent);
+    }
+
+    function replaceFormToPoint() {
+      replace(pointComponent, pointEditComponent);
+    }
+
+    function pointEditClickHandler() {
+      replacePointToForm();
+      document.addEventListener('keydown', escKeyDownHandler);
+    }
+
+    function resetButtonClickHandler() {
+      replaceFormToPoint();
+      document.removeEventListener('keydown', escKeyDownHandler);
+    }
+
+    function pointSubmitHandler() {
+      replaceFormToPoint();
+      document.removeEventListener('keydown', escKeyDownHandler);
+    }
+
+    render(pointComponent, this.#tripComponent.element);
   }
 }

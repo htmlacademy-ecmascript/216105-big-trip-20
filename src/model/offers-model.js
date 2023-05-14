@@ -12,7 +12,7 @@ export default class OffersModel {
       .find((offer) => offer.type === type).offers;
   }
 
-  getByIdsAndType(ids, type) {
+  getByIdsAndType({offers: ids, type}) {
     return this.getByType(type)
       .filter((offer) => ids.includes(offer.id));
   }
