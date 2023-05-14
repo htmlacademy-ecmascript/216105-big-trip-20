@@ -1,9 +1,11 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import isBetween from 'dayjs/plugin/isBetween';
 dayjs.extend(duration);
+dayjs.extend(isBetween);
 
 const DATE_FORMAT = 'MMM D';
-const TIME_FORMAT = 'hh:mm';
+const TIME_FORMAT = 'HH:mm';
 const DATE_TIME_FORMAT = 'DD/MM/YY HH:mm';
 
 function humanizePointDay(pointDate) {
@@ -33,8 +35,19 @@ function getPointDuration(dateFrom, dateTo) {
   return pointDuration.format('mm[M]');
 }
 
-function capitalizeFirstLetter(str) {
-  return str.substring(0, 1).toUpperCase() + str.substring(1);
+function isPointPast({dateTo}) {
+  return dayjs().isAfter(dateTo);
 }
 
-export {humanizePointDay, humanizePointTime, humanizeEditPointTime, getPointDuration, capitalizeFirstLetter};
+function isPointPresent({dateFrom, dateTo}) {
+  return dayjs().isBetween(dateFrom, dateTo, 'day', '[]');
+}
+
+function isPointFuture({dateFrom}) {
+  return dayjs().isBefore(dateFrom);
+}
+
+export {
+  humanizePointDay, humanizePointTime, humanizeEditPointTime,
+  getPointDuration, isPointPast, isPointPresent, isPointFuture
+};
