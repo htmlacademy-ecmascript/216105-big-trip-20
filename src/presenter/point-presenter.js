@@ -4,6 +4,7 @@ import PointView from '../view/point-view.js';
 
 export default class PointPresenter {
   #tripContainer = null;
+  #handleDataChange = null;
 
   #pointComponent = null;
   #pointEditComponent = null;
@@ -12,10 +13,11 @@ export default class PointPresenter {
   #offersModel = null;
   #destinationsModel = null;
 
-  constructor({tripContainer, offersModel, destinationsModel}) {
+  constructor({tripContainer, offersModel, destinationsModel, onDataChange}) {
     this.#tripContainer = tripContainer;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
+    this.#handleDataChange = onDataChange;
   }
 
   init(point) {
@@ -28,7 +30,8 @@ export default class PointPresenter {
       point: this.#point,
       pointOffers: this.#offersModel.getByIdsAndType(this.#point),
       pointDestination: this.#destinationsModel.getById(this.#point.destination),
-      onEditClick: this.#handlePointEditClick
+      onEditClick: this.#handlePointEditClick,
+      onFavoriteClick: this.#handleFavoriteClick
     });
 
     this.#pointEditComponent = new EditPointView({
@@ -78,18 +81,26 @@ export default class PointPresenter {
     replace(this.#pointComponent, this.#pointEditComponent);
   }
 
-  #handlePointEditClick() {
+  #handlePointEditClick = () => {
     this.#replacePointToForm();
     document.addEventListener('keydown', this.#escKeyDownHandler);
-  }
+  };
 
-  #resetButtonClickHandler() {
+  #resetButtonClickHandler = () => {
     this.#replaceFormToPoint();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
-  }
+  };
 
-  #handlePointSubmit() {
+  #handleFavoriteClick = () => {
+    this.#handleDataChange({
+      ...this.#point,
+      isFavorite: !this.#point.isFavorite
+    });
+  };
+
+  #handlePointSubmit = (point) => {
+    this.#handleDataChange(point);
     this.#replaceFormToPoint();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
-  }
+  };
 }
