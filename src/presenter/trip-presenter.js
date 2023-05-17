@@ -1,7 +1,7 @@
-import {render, replace} from '../framework/render.js';
+import {render} from '../framework/render.js';
+import {updateItem} from '../utils/common.js';
+import PointPresenter from './point-presenter.js';
 import TripView from '../view/trip-view';
-import EditPointView from '../view/edit-point-view';
-import PointView from '../view/point-view.js';
 import NoPointsView from '../view/no-points-view.js';
 
 export default class TripPresenter {
@@ -11,6 +11,7 @@ export default class TripPresenter {
   #pointsModel = null;
   #offersModel = null;
   #destinationsModel = null;
+  #pointPresenters = new Map();
 
   constructor({tripContainer, pointsModel, offersModel, destinationsModel}) {
     this.#tripContainer = tripContainer;
@@ -32,58 +33,37 @@ export default class TripPresenter {
         this.#renderPoint(point);
       });
     } else {
-      render(new NoPointsView('EVERYTHING'), this.#tripComponent.element);
+      this.#renderNoPoints();
     }
+  }
+
+  #clearPointsList() {
+    this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#pointPresenters.clear();
   }
 
   #renderPoint(point) {
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceFormToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
-
-    const pointComponent = new PointView({
-      point,
-      pointOffers: this.#offersModel.getByIdsAndType(point),
-      pointDestination: this.#destinationsModel.getById(point.destination),
-      onEditClick: pointEditClickHandler
+    const pointPresenter = new PointPresenter({
+      tripContainer: this.#tripComponent.element,
+      offersModel: this.#offersModel,
+      destinationsModel: this.#destinationsModel,
+      onDataChange: this.#handlePointChange,
+      onModeChange: this.#handleModeChange
     });
-
-    const pointEditComponent = new EditPointView({
-      point,
-      allOffers: this.#offersModel.getByType(point.type),
-      allDestinations: this.#destinationsModel.destinations,
-      chosenDestination: this.#destinationsModel.getById(point.destination),
-      onResetClick: resetButtonClickHandler,
-      onFormSubmit: pointSubmitHandler
-    });
-
-    function replacePointToForm() {
-      replace(pointEditComponent, pointComponent);
-    }
-
-    function replaceFormToPoint() {
-      replace(pointComponent, pointEditComponent);
-    }
-
-    function pointEditClickHandler() {
-      replacePointToForm();
-      document.addEventListener('keydown', escKeyDownHandler);
-    }
-
-    function resetButtonClickHandler() {
-      replaceFormToPoint();
-      document.removeEventListener('keydown', escKeyDownHandler);
-    }
-
-    function pointSubmitHandler() {
-      replaceFormToPoint();
-      document.removeEventListener('keydown', escKeyDownHandler);
-    }
-
-    render(pointComponent, this.#tripComponent.element);
+    pointPresenter.init(point);
+    this.#pointPresenters.set(point.id, pointPresenter);
   }
+
+  #renderNoPoints() {
+    render(new NoPointsView('EVERYTHING'), this.#tripComponent.element);
+  }
+
+  #handlePointChange = (updatedPoint) => {
+    this.#points = updateItem(this.#points, updatedPoint);
+    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
+  };
+
+  #handleModeChange = () => {
+    this.#pointPresenters.forEach((presenter) => presenter.resetView());
+  };
 }
