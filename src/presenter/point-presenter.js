@@ -2,7 +2,7 @@ import {render, replace, remove} from '../framework/render.js';
 import EditPointView from '../view/edit-point-view';
 import PointView from '../view/point-view.js';
 
-const Mode = {
+const PointDisplayMode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING'
 };
@@ -10,7 +10,7 @@ const Mode = {
 export default class PointPresenter {
   #tripContainer = null;
   #handleDataChange = null;
-  #handleModeChange = null;
+  #handlePointDisplayModeChange = null;
 
   #pointComponent = null;
   #pointEditComponent = null;
@@ -18,17 +18,17 @@ export default class PointPresenter {
   #point = null;
   #offersModel = null;
   #destinationsModel = null;
-  #mode = Mode.DEFAULT;
+  #pointDisplayMode = PointDisplayMode.DEFAULT;
 
   constructor({
     tripContainer, offersModel, destinationsModel,
-    onDataChange, onModeChange
+    onDataChange, onPointDisplayModeChange
   }) {
     this.#tripContainer = tripContainer;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
     this.#handleDataChange = onDataChange;
-    this.#handleModeChange = onModeChange;
+    this.#handlePointDisplayModeChange = onPointDisplayModeChange;
   }
 
   init(point) {
@@ -59,11 +59,11 @@ export default class PointPresenter {
       return;
     }
 
-    if (this.#mode === Mode.DEFAULT) {
+    if (this.#pointDisplayMode === PointDisplayMode.DEFAULT) {
       replace(this.#pointComponent, prevPointComponent);
     }
 
-    if (this.#mode === Mode.EDITING) {
+    if (this.#pointDisplayMode === PointDisplayMode.EDITING) {
       replace(this.#pointEditComponent, prevPointEditComponent);
     }
 
@@ -77,7 +77,7 @@ export default class PointPresenter {
   }
 
   resetView() {
-    if (this.#mode !== Mode.DEFAULT) {
+    if (this.#pointDisplayMode !== PointDisplayMode.DEFAULT) {
       this.#replaceFormToPoint();
     }
   }
@@ -92,13 +92,13 @@ export default class PointPresenter {
 
   #replacePointToForm() {
     replace(this.#pointEditComponent, this.#pointComponent);
-    this.#handleModeChange();
-    this.#mode = Mode.EDITING;
+    this.#handlePointDisplayModeChange();
+    this.#pointDisplayMode = PointDisplayMode.EDITING;
   }
 
   #replaceFormToPoint() {
     replace(this.#pointComponent, this.#pointEditComponent);
-    this.#mode = Mode.DEFAULT;
+    this.#pointDisplayMode = PointDisplayMode.DEFAULT;
   }
 
   #handlePointEditClick = () => {
