@@ -3,12 +3,12 @@ const mockOffers = [
     'type': 'taxi',
     'offers': [
       {
-        'id': 1,
+        'id': '1',
         'title': 'Choose the radio station',
         'price': 5
       },
       {
-        'id': 2,
+        'id': '2',
         'title': 'Test taxi offer 2',
         'price': 7
       }
@@ -18,17 +18,17 @@ const mockOffers = [
     'type': 'flight',
     'offers': [
       {
-        'id': 1,
+        'id': '1',
         'title': 'Add luggage',
         'price': 30
       },
       {
-        'id': 2,
+        'id': '2',
         'title': 'Switch to comfort class',
         'price': 100
       },
       {
-        'id': 3,
+        'id': '3',
         'title': 'Add meal',
         'price': 15
       }
