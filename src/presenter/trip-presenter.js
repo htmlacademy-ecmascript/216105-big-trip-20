@@ -5,6 +5,7 @@ import NoPointsView from '../view/no-points-view.js';
 
 import {render, replace, remove} from '../framework/render.js';
 import {sortPoints} from '../utils/sort.js';
+import {filter} from '../utils/filter.js';
 import {SortTypes, DEFAULT_SORT_TYPE, UpdateType, UserAction} from '../consts.js';
 
 export default class TripPresenter {
@@ -16,21 +17,28 @@ export default class TripPresenter {
   #pointsModel = null;
   #offersModel = null;
   #destinationsModel = null;
+  #filterModel = null;
   #pointPresenters = new Map();
 
   #currentSortType = SortTypes[DEFAULT_SORT_TYPE];
 
-  constructor({tripContainer, pointsModel, offersModel, destinationsModel}) {
+  constructor({
+    tripContainer, pointsModel, offersModel, destinationsModel, filterModel
+  }) {
     this.#tripContainer = tripContainer;
     this.#pointsModel = pointsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
+    this.#filterModel = filterModel;
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
-    return sortPoints[this.#currentSortType]([...this.#pointsModel.points]);
+    const filterType = this.#filterModel.filter;
+    const filteredPoints = filter[filterType]([...this.#pointsModel.points]);
+    return sortPoints[this.#currentSortType](filteredPoints);
   }
 
   init() {
