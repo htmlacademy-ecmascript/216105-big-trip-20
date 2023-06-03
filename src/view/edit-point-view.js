@@ -111,7 +111,7 @@ function createEditPointTemplate({point, allOffers, allDestinations}) {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__reset-btn" type="reset" data-action="delete">Delete</button>
           <button class="event__rollup-btn" type="button">
             <span class="visually-hidden">Open event</span>
           </button>
@@ -132,11 +132,12 @@ export default class EditPointView extends AbstractStatefulView {
   #allOffers = null;
   #allDestinations = null;
   #handleResetClick = null;
+  #handleDeleteClick = null;
   #handleFormSubmit = null;
 
   constructor({
     point = BLANK_POINT, allOffers, allDestinations,
-    onResetClick, onFormSubmit
+    onResetClick, onDeleteClick, onFormSubmit
   }) {
     super();
     this.#allOffers = allOffers;
@@ -144,6 +145,7 @@ export default class EditPointView extends AbstractStatefulView {
     this._setState(EditPointView.parsePointToState(point));
 
     this.#handleResetClick = onResetClick;
+    this.#handleDeleteClick = onDeleteClick;
     this.#handleFormSubmit = onFormSubmit;
 
     this._restoreHandlers();
@@ -183,6 +185,9 @@ export default class EditPointView extends AbstractStatefulView {
     this.element
       .querySelector('#event-destination-1')
       .addEventListener('change', this.#destinationChangeHandler);
+
+    this.element.querySelector('[data-action="delete"]')
+      .addEventListener('click', this.#pointDeleteClickHandler);
 
     this.element
       .querySelector('form')
@@ -243,6 +248,12 @@ export default class EditPointView extends AbstractStatefulView {
     this.updateElement({
       destination: chosenDestinationId
     });
+  };
+
+  #pointDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+
+    this.#handleDeleteClick(EditPointView.parseStateToPoint(this._state));
   };
 
   #formSubmitHandler = (evt) => {

@@ -44,7 +44,20 @@ const EnabledSortTypes = {
 
 const DEFAULT_SORT_TYPE = 'DAY';
 
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
 export {
   POINT_TYPES, BLANK_POINT, NoPointsMessage,
-  FilterType, SortTypes, EnabledSortTypes, DEFAULT_SORT_TYPE
+  FilterType, SortTypes, EnabledSortTypes, DEFAULT_SORT_TYPE,
+  UserAction, UpdateType
 };

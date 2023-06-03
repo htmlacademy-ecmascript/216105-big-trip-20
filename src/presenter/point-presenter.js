@@ -1,6 +1,7 @@
 import {render, replace, remove} from '../framework/render.js';
 import EditPointView from '../view/edit-point-view';
 import PointView from '../view/point-view.js';
+import {UserAction, UpdateType} from '../consts.js';
 
 const PointDisplayMode = {
   DEFAULT: 'DEFAULT',
@@ -50,6 +51,7 @@ export default class PointPresenter {
       allOffers: this.#offersModel.offers,
       allDestinations: this.#destinationsModel.destinations,
       onResetClick: this.#resetButtonClickHandler,
+      onDeleteClick: this.#handleDeleteClick,
       onFormSubmit: this.#handlePointSubmit
     });
 
@@ -113,14 +115,33 @@ export default class PointPresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#handleDataChange({
-      ...this.#point,
-      isFavorite: !this.#point.isFavorite
-    });
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.PATCH,
+      {...this.#point, isFavorite: !this.#point.isFavorite}
+    );
   };
 
-  #handlePointSubmit = (point) => {
-    this.#handleDataChange(point);
+  #handleDeleteClick = (point) => {
+    this.#handleDataChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
+  };
+
+  #handlePointSubmit = (update) => {
+    const isMinorUpdate = true; ////!!!!!!!!!!
+    //проверить, поменялись ли в точке данные, которые попадают под фильтрацию или сортировку
+    // const isMinorUpdate =
+    //   !isDatesEqual(this.#task.dueDate, update.dueDate) ||
+    //   isTaskRepeating(this.#task.repeating) !== isTaskRepeating(update.repeating);
+
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      update
+    );
     this.#replaceFormToPoint();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };

@@ -16,8 +16,8 @@ const mockPoints = [
   {
     'id': 2,
     'basePrice': 30,
-    'dateFrom': '2023-05-10T22:00:00.000Z',
-    'dateTo': '2023-05-10T22:20:00.000Z',
+    'dateFrom': '2023-05-21T22:00:00.000Z',
+    'dateTo': '2023-05-23T02:20:00.000Z',
     'destination': getRandomDestination(),
     'isFavorite': true,
     'offers': getRandomOffers('taxi'),
@@ -26,12 +26,12 @@ const mockPoints = [
   {
     'id': 3,
     'basePrice': 160,
-    'dateFrom': '2023-05-21T22:00:00.000Z',
-    'dateTo': '2023-05-23T02:20:00.000Z',
+    'dateFrom': '2023-05-10T22:00:00.000Z',
+    'dateTo': '2023-05-10T22:20:00.000Z',
     'destination': getRandomDestination(),
     'isFavorite': false,
-    'offers': getRandomOffers('flight'),
-    'type': 'flight'
+    'offers': getRandomOffers('check-in'),
+    'type': 'check-in'
   },
   {
     'id': 4,
@@ -45,6 +45,8 @@ const mockPoints = [
   }
 ];
 
-export default function getRandomPoint() {
+function getRandomPoint() {
   return getRandomArrayElement(mockPoints);
 }
+
+export {mockPoints, getRandomPoint};
