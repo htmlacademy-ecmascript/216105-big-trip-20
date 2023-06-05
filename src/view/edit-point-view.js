@@ -26,8 +26,10 @@ function createEventSelectionTemplate(chosenType) {
 }
 
 function createDestinationSelectionTemplate(allDestinations, chosenDestination) {
+  const destinationName = chosenDestination?.name || '';
+
   return (
-    `<input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${chosenDestination.name}" list="destination-list-1">
+    `<input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationName}" list="destination-list-1">
     <datalist id="destination-list-1">
       ${allDestinations.map((destinationItem) => `<option value="${destinationItem.name}"></option>`).join('')}
     </datalist>`
@@ -65,7 +67,22 @@ function createDestinationTemplate(chosenDestination) {
   );
 }
 
-function createEditPointTemplate({point, allOffers, allDestinations}) {
+function createButtonsTemplate(isNewPoint) {
+  const deleteButtonText = isNewPoint ? 'Cancel' : 'Delete';
+
+  return (
+    `<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+    <button class="event__reset-btn" type="reset" data-action="delete">${deleteButtonText}</button>
+
+    ${isNewPoint ? '' :
+      `<button class="event__rollup-btn" type="button">
+        <span class="visually-hidden">Open event</span>
+      </button>`
+    }`
+  );
+}
+
+function createEditPointTemplate({point, allOffers, allDestinations, isNewPoint}) {
   const {
     dateFrom, dateTo, type,
     destination: destinationId, destinationName,
@@ -110,11 +127,8 @@ function createEditPointTemplate({point, allOffers, allDestinations}) {
             <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset" data-action="delete">Delete</button>
-          <button class="event__rollup-btn" type="button">
-            <span class="visually-hidden">Open event</span>
-          </button>
+          ${createButtonsTemplate(isNewPoint)}
+
         </header>
         <section class="event__details">
 
@@ -129,6 +143,7 @@ function createEditPointTemplate({point, allOffers, allDestinations}) {
 }
 
 export default class EditPointView extends AbstractStatefulView {
+  #isNewPoint = null;
   #allOffers = null;
   #allDestinations = null;
   #handleResetClick = null;
@@ -136,10 +151,11 @@ export default class EditPointView extends AbstractStatefulView {
   #handleFormSubmit = null;
 
   constructor({
-    point = BLANK_POINT, allOffers, allDestinations,
+    point = BLANK_POINT, isNewPoint = false, allOffers, allDestinations,
     onResetClick, onDeleteClick, onFormSubmit
   }) {
     super();
+    this.#isNewPoint = isNewPoint;
     this.#allOffers = allOffers;
     this.#allDestinations = allDestinations;
     this._setState(EditPointView.parsePointToState(point));
@@ -155,7 +171,8 @@ export default class EditPointView extends AbstractStatefulView {
     return createEditPointTemplate({
       point: this._state,
       allOffers: this.#allOffers,
-      allDestinations: this.#allDestinations
+      allDestinations: this.#allDestinations,
+      isNewPoint: this.#isNewPoint
     });
   }
 
@@ -168,7 +185,7 @@ export default class EditPointView extends AbstractStatefulView {
   _restoreHandlers() {
     this.element
       .querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#resetClickHandler);
+      ?.addEventListener('click', this.#resetClickHandler);
 
     this.element
       .querySelector('.event__type-group')

@@ -1,4 +1,5 @@
 import PointPresenter from './point-presenter.js';
+import NewPointPresenter from './new-point-presenter.js';
 import SortView from '../view/sort-view.js';
 import TripView from '../view/trip-view';
 import NoPointsView from '../view/no-points-view.js';
@@ -12,18 +13,20 @@ export default class TripPresenter {
   // #points = [];
   #sortComponent = null;
   #tripComponent = new TripView();
-  #noPointsComponent = new NoPointsView('EVERYTHING');
+  #noPointsComponent = null;
   #tripContainer = null;
   #pointsModel = null;
   #offersModel = null;
   #destinationsModel = null;
   #filterModel = null;
+  #filterType = null;
   #pointPresenters = new Map();
+  #newPointPresenter = null;
 
   #currentSortType = SortTypes[DEFAULT_SORT_TYPE];
 
   constructor({
-    tripContainer, pointsModel, offersModel, destinationsModel, filterModel
+    tripContainer, pointsModel, offersModel, destinationsModel, filterModel, onNewPointDestroy
   }) {
     this.#tripContainer = tripContainer;
     this.#pointsModel = pointsModel;
@@ -33,11 +36,19 @@ export default class TripPresenter {
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+
+    this.#newPointPresenter = new NewPointPresenter({
+      tripContainer: this.#tripComponent.element,
+      offersModel: this.#offersModel,
+      destinationsModel: this.#destinationsModel,
+      onDataChange: this.#handleViewAction,
+      onDestroy: onNewPointDestroy
+    });
   }
 
   get points() {
-    const filterType = this.#filterModel.filter;
-    const filteredPoints = filter[filterType]([...this.#pointsModel.points]);
+    this.#filterType = this.#filterModel.filter;
+    const filteredPoints = filter[this.#filterType]([...this.#pointsModel.points]);
     return sortPoints[this.#currentSortType](filteredPoints);
   }
 
@@ -45,6 +56,12 @@ export default class TripPresenter {
     // this.#points = sortPoints[this.#currentSortType]([...this.#pointsModel.points]);
     this.#renderSort();
     this.#renderTrip();
+  }
+
+  createPoint() {
+    // this.#currentSortType = SortType.DEFAULT;
+    // this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.ALL);
+    this.#newPointPresenter.init();
   }
 
   #renderSort() {
@@ -90,6 +107,8 @@ export default class TripPresenter {
   }
 
   #renderNoPoints() {
+    this.#noPointsComponent = new NoPointsView(this.#filterType);
+    //переименовать в currentfilter или че-то подобное
     render(this.#noPointsComponent, this.#tripComponent.element);
   }
 
@@ -99,11 +118,14 @@ export default class TripPresenter {
   // }
 
   #clearTrip({resetSortType = false} = {}) {
+    this.#newPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
 
     // remove(this.#sortComponent);
-    remove(this.#noPointsComponent);
+    if (this.#noPointsComponent) {
+      remove(this.#noPointsComponent);
+    }
 
     if (resetSortType) {
       this.#currentSortType = SortTypes[DEFAULT_SORT_TYPE];
@@ -159,7 +181,7 @@ export default class TripPresenter {
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
         // в демо-проекте:
-        // this.#clearBoard({resetRenderedTaskCount: true, resetSortType: true});
+        // this.#clearBoard({resetRenderedPointCount: true, resetSortType: true});
         // понять, как у меня
         this.#clearTrip({resetSortType: true});
         this.#renderTrip();
@@ -168,6 +190,7 @@ export default class TripPresenter {
   };
 
   #handlePointDisplayModeChange = () => {
+    this.#newPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 

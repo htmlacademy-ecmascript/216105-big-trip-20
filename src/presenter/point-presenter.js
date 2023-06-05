@@ -1,5 +1,5 @@
 import {render, replace, remove} from '../framework/render.js';
-import EditPointView from '../view/edit-point-view';
+import EditPointView from '../view/edit-point-view.js';
 import PointView from '../view/point-view.js';
 import {UserAction, UpdateType} from '../consts.js';
 
