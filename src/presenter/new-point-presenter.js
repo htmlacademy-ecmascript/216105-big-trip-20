@@ -7,17 +7,17 @@ export default class NewPointPresenter {
   #offersModel = null;
   #destinationsModel = null;
   #handleDataChange = null;
-  #handleDestroy = null;
+  #handleNewPointDestroy = null;
 
   #pointEditComponent = null;
 
   constructor({tripContainer, offersModel, destinationsModel,
-    onDataChange, onDestroy}) { //onDestroy переименовать
+    onDataChange, onNewPointDestroy}) {
     this.#tripContainer = tripContainer;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
     this.#handleDataChange = onDataChange;
-    this.#handleDestroy = onDestroy;
+    this.#handleNewPointDestroy = onNewPointDestroy;
   }
 
   init() {
@@ -41,12 +41,12 @@ export default class NewPointPresenter {
     document.addEventListener('keydown', this.#escKeyDownHandler);
   }
 
-  destroy() {
+  destroyNewPoint() {
     if (this.#pointEditComponent === null) {
       return;
     }
 
-    this.#handleDestroy();
+    this.#handleNewPointDestroy();
 
     remove(this.#pointEditComponent);
     this.#pointEditComponent = null;
@@ -62,11 +62,11 @@ export default class NewPointPresenter {
       // выдывал честный id задачи, нам нужно позаботиться об этом самим
       {id: 5, ...point},
     );
-    this.destroy();
+    this.destroyNewPoint();
   };
 
   #handleDeleteClick = () => {
-    this.destroy();
+    this.destroyNewPoint();
   };
 
   #escKeyDownHandler = (evt) => {

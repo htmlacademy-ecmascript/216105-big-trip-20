@@ -72,7 +72,7 @@ export default class PointPresenter {
     remove(prevPointEditComponent);
   }
 
-  destroy() {
+  destroyPoint() {
     remove(this.#pointComponent);
     remove(this.#pointEditComponent);
   }
