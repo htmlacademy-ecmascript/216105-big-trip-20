@@ -2,6 +2,9 @@ import {getRandomArrayElement} from './utils.js';
 import {getRandomDestination} from './destinations.js';
 import {getRandomOffers} from './offers.js';
 
+// const mockPoints = [];
+
+// const mockPoints1 = [
 const mockPoints = [
   {
     'id': 1,

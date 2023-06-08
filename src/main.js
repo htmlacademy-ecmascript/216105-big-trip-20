@@ -1,7 +1,7 @@
 import {render, RenderPosition} from './framework/render.js';
 
 import TripInfoView from './view/trip-info-view.js';
-import NewPointButtonView from './view/new-point-button-view.js';
+// import NewPointButtonView from './view/new-point-button-view.js';
 
 import TripPresenter from './presenter/trip-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
@@ -30,29 +30,30 @@ const filterPresenter = new FilterPresenter({
 });
 
 const tripPresenter = new TripPresenter({
+  mainContainer: tripMainElement,
   tripContainer: tripEventsElement,
   pointsModel,
   offersModel,
   destinationsModel,
   filterModel,
-  onNewPointDestroy: handleNewPointFormClose
+  // onNewPointDestroy: handleNewPointFormClose
 });
 
-const newPointButtonComponent = new NewPointButtonView({
-  onClick: handleNewPointButtonClick
-});
+// const newPointButtonComponent = new NewPointButtonView({
+//   onClick: handleNewPointButtonClick
+// });
 
-function handleNewPointFormClose() {
-  newPointButtonComponent.element.disabled = false;
-}
+// function handleNewPointFormClose() {
+//   newPointButtonComponent.element.disabled = false;
+// }
 
-function handleNewPointButtonClick() {
-  tripPresenter.createPoint();
-  newPointButtonComponent.element.disabled = true;
-}
+// function handleNewPointButtonClick() {
+//   tripPresenter.createPoint();
+//   newPointButtonComponent.element.disabled = true;
+// }
 
 render(new TripInfoView(), tripMainElement, RenderPosition.AFTERBEGIN);
-render(newPointButtonComponent, tripMainElement);
+// render(newPointButtonComponent, tripMainElement);
 
 filterPresenter.init();
 tripPresenter.init();
