@@ -1,3 +1,4 @@
+import he from 'he';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {POINT_TYPES, BLANK_POINT} from '../consts.js';
 import {humanizeEditPointTime} from '../utils/point.js';
@@ -26,8 +27,10 @@ function createEventSelectionTemplate(chosenType) {
 }
 
 function createDestinationSelectionTemplate(allDestinations, chosenDestination) {
+  const destinationName = chosenDestination?.name || '';
+
   return (
-    `<input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${chosenDestination.name}" list="destination-list-1">
+    `<input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(destinationName)}" list="destination-list-1">
     <datalist id="destination-list-1">
       ${allDestinations.map((destinationItem) => `<option value="${destinationItem.name}"></option>`).join('')}
     </datalist>`
@@ -65,7 +68,22 @@ function createDestinationTemplate(chosenDestination) {
   );
 }
 
-function createEditPointTemplate({point, allOffers, allDestinations}) {
+function createControlsTemplate(isNewPoint) {
+  const deleteButtonText = isNewPoint ? 'Cancel' : 'Delete';
+
+  return (
+    `<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+    <button class="event__reset-btn" type="reset" data-action="delete">${deleteButtonText}</button>
+
+    ${isNewPoint ? '' :
+      `<button class="event__rollup-btn" type="button">
+        <span class="visually-hidden">Open event</span>
+      </button>`
+    }`
+  );
+}
+
+function createEditPointTemplate({point, allOffers, allDestinations, isNewPoint}) {
   const {
     dateFrom, dateTo, type,
     destination: destinationId, destinationName,
@@ -107,14 +125,11 @@ function createEditPointTemplate({point, allOffers, allDestinations}) {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}">
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
-          <button class="event__rollup-btn" type="button">
-            <span class="visually-hidden">Open event</span>
-          </button>
+          ${createControlsTemplate(isNewPoint)}
+
         </header>
         <section class="event__details">
 
@@ -129,21 +144,25 @@ function createEditPointTemplate({point, allOffers, allDestinations}) {
 }
 
 export default class EditPointView extends AbstractStatefulView {
+  #isNewPoint = null;
   #allOffers = null;
   #allDestinations = null;
   #handleResetClick = null;
+  #handleDeleteClick = null;
   #handleFormSubmit = null;
 
   constructor({
-    point = BLANK_POINT, allOffers, allDestinations,
-    onResetClick, onFormSubmit
+    point = BLANK_POINT, isNewPoint = false, allOffers, allDestinations,
+    onResetClick, onDeleteClick, onFormSubmit
   }) {
     super();
+    this.#isNewPoint = isNewPoint;
     this.#allOffers = allOffers;
     this.#allDestinations = allDestinations;
     this._setState(EditPointView.parsePointToState(point));
 
     this.#handleResetClick = onResetClick;
+    this.#handleDeleteClick = onDeleteClick;
     this.#handleFormSubmit = onFormSubmit;
 
     this._restoreHandlers();
@@ -153,7 +172,8 @@ export default class EditPointView extends AbstractStatefulView {
     return createEditPointTemplate({
       point: this._state,
       allOffers: this.#allOffers,
-      allDestinations: this.#allDestinations
+      allDestinations: this.#allDestinations,
+      isNewPoint: this.#isNewPoint
     });
   }
 
@@ -166,7 +186,11 @@ export default class EditPointView extends AbstractStatefulView {
   _restoreHandlers() {
     this.element
       .querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#resetClickHandler);
+      ?.addEventListener('click', this.#resetClickHandler);
+
+    this.element
+      .querySelector('.event__reset-btn')
+      .addEventListener('click', this.#pointDeleteClickHandler);
 
     this.element
       .querySelector('.event__type-group')
@@ -243,6 +267,12 @@ export default class EditPointView extends AbstractStatefulView {
     this.updateElement({
       destination: chosenDestinationId
     });
+  };
+
+  #pointDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+
+    this.#handleDeleteClick(EditPointView.parseStateToPoint(this._state));
   };
 
   #formSubmitHandler = (evt) => {

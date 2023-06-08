@@ -4,8 +4,8 @@ const DEFAULT_TYPE = 'flight';
 
 const BLANK_POINT = {
   basePrice: 0,
-  dateFrom: null,
-  dateTo: null,
+  dateFrom: new Date(),
+  dateTo: new Date(),
   destination: null,
   isFavourite: false,
   offers: [],
@@ -20,10 +20,10 @@ const FilterType = {
 };
 
 const NoPointsMessage = {
-  EVERYTHING: 'Click New Event to create your first point',
-  PAST: 'There are no past events now',
-  PRESENT: 'There are no present events now',
-  FUTURE: 'There are no future events now'
+  [FilterType.EVERYTHING]: 'Click New Event to create your first point',
+  [FilterType.PAST]: 'There are no past events now',
+  [FilterType.PRESENT]: 'There are no present events now',
+  [FilterType.FUTURE]: 'There are no future events now'
 };
 
 const SortTypes = {
@@ -44,7 +44,20 @@ const EnabledSortTypes = {
 
 const DEFAULT_SORT_TYPE = 'DAY';
 
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
 export {
   POINT_TYPES, BLANK_POINT, NoPointsMessage,
-  FilterType, SortTypes, EnabledSortTypes, DEFAULT_SORT_TYPE
+  FilterType, SortTypes, EnabledSortTypes, DEFAULT_SORT_TYPE,
+  UserAction, UpdateType
 };

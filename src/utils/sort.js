@@ -26,11 +26,11 @@ function sortByDay(pointA, pointB) {
 function sortByTime(pointA, pointB) {
   const durationA = dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom));
   const durationB = dayjs(pointB.dateTo).diff(dayjs(pointB.dateFrom));
-  return durationA - durationB;
+  return durationB - durationA;
 }
 
 function sortByPrice(pointA, pointB) {
-  return pointA.basePrice - pointB.basePrice;
+  return pointB.basePrice - pointA.basePrice;
 }
 
 const sortPoints = {
