@@ -87,7 +87,9 @@ function createControlsTemplate(isNewPoint) {
   );
 }
 
-function createEditPointTemplate({point, allOffers, allDestinations, isNewPoint}) {
+function createEditPointTemplate({
+  point, allOffers, allDestinations, isNewPoint
+}) {
   const {
     dateFrom, dateTo, type,
     destination: destinationId, destinationName,
@@ -95,10 +97,11 @@ function createEditPointTemplate({point, allOffers, allDestinations, isNewPoint}
   } = point;
 
   const allTypeOffers = allOffers.find((offer) => offer.type === type).offers;
+
   const chosenDestination = allDestinations.find((destination) => {
     if (destinationName) {
       return destination.name === destinationName;
-    }
+    } //проверить, где используется, убрать, т.к. потенциальная бага
     return destination.id === destinationId;
   });
 
