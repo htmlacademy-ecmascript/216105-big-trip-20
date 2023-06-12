@@ -5,6 +5,7 @@ import SortView from '../view/sort-view.js';
 import TripView from '../view/trip-view';
 import NewPointButtonView from '../view/new-point-button-view.js';
 import NoPointsView from '../view/no-points-view.js';
+import LoadingView from '../view/loading-view.js';
 
 import {render, replace, remove, RenderPosition} from '../framework/render.js';
 import {sortPoints} from '../utils/sort.js';
@@ -22,6 +23,7 @@ export default class TripPresenter {
   #tripComponent = new TripView();
   #newPointButtonComponent = null;
   #noPointsComponent = null;
+  #loadingComponent = new LoadingView();
 
   #pointsModel = null;
   #offersModel = null;
@@ -33,6 +35,7 @@ export default class TripPresenter {
 
   #filterType = null;
   #isCreating = false;
+  #isLoading = true;
 
   #currentSortType = SortTypes[DEFAULT_SORT_TYPE];
 
@@ -54,6 +57,7 @@ export default class TripPresenter {
     this.#newPointButtonComponent = new NewPointButtonView({
       onClick: this.#handleNewPointButtonClick
     });
+    this.#newPointButtonComponent.setDisabled(true);
 
     this.#newPointPresenter = new NewPointPresenter({
       tripContainer: this.#tripComponent.element,
@@ -120,6 +124,11 @@ export default class TripPresenter {
   #renderTrip() {
     this.#renderTripContainer();
 
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     if (this.points.length === 0 && !this.#isCreating) {
       this.#renderNoPoints();
       return;
@@ -145,6 +154,10 @@ export default class TripPresenter {
     this.#pointPresenters.set(point.id, pointPresenter);
   }
 
+  #renderLoading() {
+    render(this.#loadingComponent, this.#tripComponent.element, RenderPosition.AFTERBEGIN);
+  }
+
   #renderNoPoints() {
     this.#noPointsComponent = new NoPointsView(this.#filterType);
     render(this.#noPointsComponent, this.#tripComponent.element);
@@ -154,6 +167,8 @@ export default class TripPresenter {
     this.#newPointPresenter.destroyNewPoint();
     this.#pointPresenters.forEach((presenter) => presenter.destroyPoint());
     this.#pointPresenters.clear();
+
+    remove(this.#loadingComponent);
 
     if (this.#noPointsComponent) {
       remove(this.#noPointsComponent);
@@ -190,6 +205,12 @@ export default class TripPresenter {
       case UpdateType.MAJOR:
         this.#clearTrip({resetSortType: true});
         this.#renderTrip();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderTrip();
+        this.#newPointButtonComponent.setDisabled(false);
         break;
     }
   };

@@ -54,10 +54,18 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
+};
+
+const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE'
 };
 
 export {
   POINT_TYPES, BLANK_POINT, NoPointsMessage,
   FilterType, SortTypes, EnabledSortTypes, DEFAULT_SORT_TYPE,
-  UserAction, UpdateType
+  UserAction, UpdateType, Method
 };

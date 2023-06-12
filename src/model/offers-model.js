@@ -1,23 +1,30 @@
 export default class OffersModel {
-  #offers = null;
+  #offers = [];
   #service = null;
 
   constructor(service) {
     this.#service = service;
-    this.#offers = this.#service.offers;
   }
 
   get offers() {
     return this.#offers;
   }
 
+  async init() {
+    try {
+      this.#offers = await this.#service.offers;
+    } catch(err) {
+      this.#offers = [];
+    }
+  }
+
   getByType(type) {
     return this.#offers
-      .find((offer) => offer.type === type).offers;
+      .find((offer) => offer.type === type)?.offers;
   }
 
   getByIdsAndType({offers: ids, type}) {
     return this.getByType(type)
-      .filter((offer) => ids.includes(offer.id));
+      ?.filter((offer) => ids.includes(offer.id));
   }
 }
