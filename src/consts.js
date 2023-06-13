@@ -7,7 +7,7 @@ const BLANK_POINT = {
   dateFrom: new Date(),
   dateTo: new Date(),
   destination: null,
-  isFavourite: false,
+  isFavorite: false,
   offers: [],
   type: DEFAULT_TYPE
 };

@@ -6,16 +6,12 @@ export default class DestinationsModel {
     this.#service = service;
   }
 
-  get destinations() {
-    return this.#destinations;
+  async init() {
+    this.#destinations = await this.#service.destinations;
   }
 
-  async init() {
-    try {
-      this.#destinations = await this.#service.destinations;
-    } catch(err) {
-      this.#destinations = [];
-    }
+  get destinations() {
+    return this.#destinations;
   }
 
   getById(id) {
