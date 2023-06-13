@@ -222,7 +222,7 @@ export default class TripPresenter {
     this.#uiBlocker.unblock();
   };
 
-  #handleModelEvent = (updateType, data) => {
+  #handleModelEvent = async (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#pointPresenters.get(data.id)?.init(data);
@@ -237,7 +237,7 @@ export default class TripPresenter {
         break;
       case UpdateType.INIT:
         this.#isLoading = false;
-        remove(this.#loadingComponent);
+        this.#clearTrip();
         this.#renderTrip();
         this.#newPointButtonComponent.setDisabled(false);
         break;
