@@ -7,6 +7,7 @@ import NewPointButtonView from '../view/new-point-button-view.js';
 import NoPointsView from '../view/no-points-view.js';
 import LoadingView from '../view/loading-view.js';
 
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import {render, replace, remove, RenderPosition} from '../framework/render.js';
 import {sortPoints} from '../utils/sort.js';
 import {filter} from '../utils/filter.js';
@@ -14,6 +15,11 @@ import {
   SortTypes, DEFAULT_SORT_TYPE,
   UpdateType, UserAction, FilterType
 } from '../consts.js';
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
 export default class TripPresenter {
   #mainContainer = null;
@@ -36,6 +42,10 @@ export default class TripPresenter {
   #filterType = null;
   #isCreating = false;
   #isLoading = true;
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   #currentSortType = SortTypes[DEFAULT_SORT_TYPE];
 
@@ -180,6 +190,8 @@ export default class TripPresenter {
   }
 
   #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointPresenters.get(update.id).setSaving();
@@ -206,6 +218,8 @@ export default class TripPresenter {
         }
         break;
     }
+
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
