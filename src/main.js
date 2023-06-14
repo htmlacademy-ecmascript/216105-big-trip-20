@@ -1,9 +1,6 @@
-import {render, RenderPosition} from './framework/render.js';
-
-import TripInfoView from './view/trip-info-view.js';
-
 import TripPresenter from './presenter/trip-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
+import TripInfoPresenter from './presenter/trip-info-presenter.js';
 
 import PointsApiService from './service/points-api-service.js';
 
@@ -45,8 +42,14 @@ const tripPresenter = new TripPresenter({
   filterModel,
 });
 
-render(new TripInfoView(), tripMainElement, RenderPosition.AFTERBEGIN);
+const tripInfoPresenter = new TripInfoPresenter({
+  container: tripMainElement,
+  pointsModel,
+  offersModel,
+  destinationsModel
+});
 
 filterPresenter.init();
 tripPresenter.init();
 pointsModel.init();
+tripInfoPresenter.init();
