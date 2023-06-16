@@ -1,5 +1,6 @@
 import TripInfoView from '../view/trip-info-view.js';
 import {render, replace, remove, RenderPosition} from '../framework/render.js';
+import {getDestinationsNames, getTotalSum} from '../utils/trip-info.js';
 import {sortPoints} from '../utils/sort.js';
 import {SortTypes} from '../consts.js';
 
@@ -26,10 +27,16 @@ export default class TripInfoPresenter {
     this.#points = sortPoints[SortTypes.DAY]([...this.#pointsModel.points]);
 
     this.#tripInfoComponent = new TripInfoView({
-      destinationsNames: this.#getDestinationsNames(),
+      destinationsNames: getDestinationsNames({
+        points: this.#points,
+        destinations: this.#destinationsModel.destinations
+      }),
       startDate: this.#points.at(0)?.dateFrom,
       endDate: this.#points.at(-1)?.dateTo,
-      total: this.#getTotalSum()
+      total: getTotalSum({
+        points: this.#points,
+        offersModel: this.#offersModel
+      })
     });
 
     if (prevTripInfoComponent === null) {
@@ -43,31 +50,6 @@ export default class TripInfoPresenter {
 
     replace(this.#tripInfoComponent, prevTripInfoComponent);
     remove(prevTripInfoComponent);
-  }
-
-  #getDestinationsNames() {
-    const destinations = this.#destinationsModel.destinations;
-
-    return this.#points.map((point) => {
-      const pointDestination = destinations
-        .find((destination) => destination.id === point.destination);
-      return pointDestination?.name;
-    });
-  }
-
-  #getTotalSum() {
-    return this.#points.reduce((totalSum, point) => {
-      const pointOffers = this.#offersModel.getByIdsAndType({
-        offers: point.offers,
-        type: point.type
-      });
-
-      const pointOffersSum = pointOffers
-        .reduce((offersSum, offer) => Number(offer.price) + offersSum, 0);
-
-      return Number(point.basePrice) + pointOffersSum + totalSum;
-    }, 0);
-
   }
 
   #handleModelEvent = () => {
