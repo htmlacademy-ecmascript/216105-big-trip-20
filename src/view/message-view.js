@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {NoPointsMessage} from '../consts.js';
+import {NoPointsMessage} from '../const.js';
 
 function getMessage({filterType, isLoading, isError}) {
   if (isLoading) {

@@ -4,8 +4,8 @@ const DEFAULT_TYPE = 'flight';
 
 const BLANK_POINT = {
   basePrice: 0,
-  dateFrom: new Date(),
-  dateTo: new Date(),
+  dateFrom: null,
+  dateTo: null,
   destination: null,
   isFavorite: false,
   offers: [],

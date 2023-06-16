@@ -13,7 +13,7 @@ import {filter} from '../utils/filter.js';
 import {
   SortTypes, DEFAULT_SORT_TYPE,
   UpdateType, UserAction, FilterType
-} from '../consts.js';
+} from '../const.js';
 
 const TimeLimit = {
   LOWER_LIMIT: 350,

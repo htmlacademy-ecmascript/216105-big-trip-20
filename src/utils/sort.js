@@ -1,4 +1,4 @@
-import {SortTypes} from '../consts.js';
+import {SortTypes} from '../const.js';
 import dayjs from 'dayjs';
 
 function getWeightForNullDate(dateA, dateB) {

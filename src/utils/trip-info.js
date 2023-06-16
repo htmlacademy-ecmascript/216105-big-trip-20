@@ -25,21 +25,10 @@ function getTripTitle(destinationsNames) {
 }
 
 function getTripDuration({startDate, endDate}) {
-  startDate = dayjs(startDate);
-  endDate = dayjs(endDate);
-
-  if (startDate.month() === endDate.month()) {
-    return `
-      ${startDate.format(DATE_FORMAT)}
-      &nbsp;&mdash;&nbsp;
-      ${endDate.format('D')}
-    `;
-  }
-
   return `
-    ${startDate.format(DATE_FORMAT)}
+    ${dayjs(startDate).format(DATE_FORMAT)}
     &nbsp;&mdash;&nbsp;
-    ${endDate.format(DATE_FORMAT)}
+    ${dayjs(endDate).format(DATE_FORMAT)}
   `;
 }
 

@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {SortTypes, EnabledSortTypes} from '../consts.js';
+import {SortTypes, EnabledSortTypes} from '../const.js';
 
 function createSortItemTemplate(sortType, currentSortType) {
   return (

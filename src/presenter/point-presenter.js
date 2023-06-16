@@ -1,7 +1,7 @@
 import {render, replace, remove} from '../framework/render.js';
-import EditPointView from '../view/edit-point-view.js';
+import PointEditView from '../view/point-edit-view.js';
 import PointView from '../view/point-view.js';
-import {UserAction, UpdateType} from '../consts.js';
+import {UserAction, UpdateType} from '../const.js';
 
 const PointDisplayMode = {
   DEFAULT: 'DEFAULT',
@@ -46,7 +46,7 @@ export default class PointPresenter {
       onFavoriteClick: this.#handleFavoriteClick
     });
 
-    this.#pointEditComponent = new EditPointView({
+    this.#pointEditComponent = new PointEditView({
       point: this.#point,
       allOffers: this.#offersModel.offers,
       allDestinations: this.#destinationsModel.destinations,
@@ -167,15 +167,9 @@ export default class PointPresenter {
   };
 
   #handlePointSubmit = (update) => {
-    const isMinorUpdate = true; ////!!!!!!!!!!
-    //проверить, поменялись ли в точке данные, которые попадают под фильтрацию или сортировку
-    // const isMinorUpdate =
-    //   !isDatesEqual(this.#task.dueDate, update.dueDate) ||
-    //   isTaskRepeating(this.#task.repeating) !== isTaskRepeating(update.repeating);
-
     this.#handleDataChange(
       UserAction.UPDATE_POINT,
-      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      UpdateType.MINOR,
       update
     );
 

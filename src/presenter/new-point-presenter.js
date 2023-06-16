@@ -1,6 +1,6 @@
 import {remove, render, RenderPosition} from '../framework/render.js';
-import EditPointView from '../view/edit-point-view.js';
-import {UserAction, UpdateType} from '../consts.js';
+import PointEditView from '../view/point-edit-view.js';
+import {UserAction, UpdateType} from '../const.js';
 
 export default class NewPointPresenter {
   #tripContainer = null;
@@ -25,7 +25,7 @@ export default class NewPointPresenter {
       return;
     }
 
-    this.#pointEditComponent = new EditPointView({
+    this.#pointEditComponent = new PointEditView({
       isNewPoint: true,
       allOffers: this.#offersModel.offers,
       allDestinations: this.#destinationsModel.destinations,

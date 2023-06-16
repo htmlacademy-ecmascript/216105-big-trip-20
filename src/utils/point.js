@@ -16,7 +16,7 @@ function humanizePointTime(pointDate) {
   return dayjs(pointDate).format(TIME_FORMAT);
 }
 
-function humanizeEditPointTime(pointDate) {
+function humanizePointEditTime(pointDate) {
   return dayjs(pointDate).format(DATE_TIME_FORMAT);
 }
 
@@ -40,7 +40,7 @@ function isPointPast({dateTo}) {
 }
 
 function isPointPresent({dateFrom, dateTo}) {
-  return dayjs().isBetween(dateFrom, dateTo, 'day', '[]');
+  return dayjs().isBetween(dateFrom, dateTo, 'milliseconds', '[]');
 }
 
 function isPointFuture({dateFrom}) {
@@ -48,6 +48,6 @@ function isPointFuture({dateFrom}) {
 }
 
 export {
-  humanizePointDay, humanizePointTime, humanizeEditPointTime,
+  humanizePointDay, humanizePointTime, humanizePointEditTime,
   getPointDuration, isPointPast, isPointPresent, isPointFuture
 };
