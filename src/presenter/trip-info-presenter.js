@@ -1,8 +1,8 @@
 import TripInfoView from '../view/trip-info-view.js';
-import {render, replace, remove, RenderPosition} from '../framework/render.js';
 import {getDestinationsNames, getTotalSum} from '../utils/trip-info.js';
 import {sortPoints} from '../utils/sort.js';
 import {SortTypes} from '../const.js';
+import {render, replace, remove, RenderPosition} from '../framework/render.js';
 
 export default class TripInfoPresenter {
   #container = null;

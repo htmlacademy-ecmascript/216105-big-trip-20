@@ -1,5 +1,4 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {capitalizeFirstLetter} from '../utils/common.js';
 
 function createFilterItemTemplate(filter, isChecked) {
   const {type, hasPoints} = filter;
@@ -15,7 +14,7 @@ function createFilterItemTemplate(filter, isChecked) {
         ${isChecked ? 'checked' : ''}
         ${hasPoints ? '' : 'disabled'}
       >
-      <label class="trip-filters__filter-label" for="filter-${type}">${capitalizeFirstLetter(type)}</label>
+      <label class="trip-filters__filter-label" for="filter-${type}">${type}</label>
     </div>`
   );
 }

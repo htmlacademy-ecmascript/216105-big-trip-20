@@ -12,6 +12,8 @@ const BLANK_POINT = {
   type: DEFAULT_TYPE
 };
 
+const DEFAULT_SORT_TYPE = 'DAY';
+
 const FilterType = {
   EVERYTHING: 'everything',
   PAST: 'past',
@@ -42,19 +44,17 @@ const EnabledSortTypes = {
   [SortTypes.OFFER]: false
 };
 
-const DEFAULT_SORT_TYPE = 'DAY';
-
 const UserAction = {
   UPDATE_POINT: 'UPDATE_POINT',
   ADD_POINT: 'ADD_POINT',
-  DELETE_POINT: 'DELETE_POINT',
+  DELETE_POINT: 'DELETE_POINT'
 };
 
 const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
-  INIT: 'INIT',
+  INIT: 'INIT'
 };
 
 const Method = {
@@ -64,8 +64,13 @@ const Method = {
   DELETE: 'DELETE'
 };
 
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000
+};
+
 export {
-  POINT_TYPES, BLANK_POINT, NoPointsMessage,
-  FilterType, SortTypes, EnabledSortTypes, DEFAULT_SORT_TYPE,
-  UserAction, UpdateType, Method
+  POINT_TYPES, BLANK_POINT, DEFAULT_SORT_TYPE,
+  NoPointsMessage, FilterType, SortTypes, EnabledSortTypes,
+  UserAction, UpdateType, Method, TimeLimit
 };

@@ -1,13 +1,11 @@
-import he from 'he';
 import AbstractView from '../framework/view/abstract-view.js';
 import {
-  humanizePointDay,
-  humanizePointTime,
-  getPointDuration
+  humanizePointDay, humanizePointTime, getPointDuration
 } from '../utils/point.js';
+import he from 'he';
 
 function createOffersTemplate(pointOffers) {
-  return pointOffers.length ? (
+  return pointOffers?.length ? (
     `<ul class="event__selected-offers">
       ${pointOffers.map(({title, price}) => `<li class="event__offer">
         <span class="event__offer-title">${title}</span>
@@ -31,7 +29,7 @@ function createPointTemplate(point, pointOffers, pointDestination) {
   const favoriteActiveClassName = isFavorite ?
     'event__favorite-btn--active' : '';
 
-  return (/*html*/
+  return (
     `<li class="trip-events__item">
       <div class="event">
         <time class="event__date" datetime="2019-03-18">${day}</time>
@@ -73,14 +71,14 @@ export default class PointView extends AbstractView {
   #handleEditClick = null;
   #handleFavoriteClick = null;
 
-  constructor({point, pointOffers, pointDestination, onEditClick, onFavoriteClick}) {
+  constructor({point, pointOffers, pointDestination, handleEditClick, handleFavoriteClick}) {
     super();
     this.#point = point;
     this.#pointOffers = pointOffers;
     this.#pointDestination = pointDestination;
 
-    this.#handleEditClick = onEditClick;
-    this.#handleFavoriteClick = onFavoriteClick;
+    this.#handleEditClick = handleEditClick;
+    this.#handleFavoriteClick = handleFavoriteClick;
 
     this.element.querySelector('.event__rollup-btn')
       .addEventListener('click', this.#editClickHandler);

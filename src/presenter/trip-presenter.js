@@ -6,19 +6,14 @@ import TripView from '../view/trip-view';
 import NewPointButtonView from '../view/new-point-button-view.js';
 import MessageView from '../view/message-view.js';
 
-import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import {render, replace, remove, RenderPosition} from '../framework/render.js';
 import {sortPoints} from '../utils/sort.js';
 import {filter} from '../utils/filter.js';
 import {
-  SortTypes, DEFAULT_SORT_TYPE,
-  UpdateType, UserAction, FilterType
+  DEFAULT_SORT_TYPE, SortTypes,
+  UpdateType, UserAction, FilterType, TimeLimit
 } from '../const.js';
-
-const TimeLimit = {
-  LOWER_LIMIT: 350,
-  UPPER_LIMIT: 1000,
-};
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
 export default class TripPresenter {
   #mainContainer = null;
@@ -64,7 +59,7 @@ export default class TripPresenter {
     this.#filterModel.addObserver(this.#handleModelEvent);
 
     this.#newPointButtonComponent = new NewPointButtonView({
-      onClick: this.#handleNewPointButtonClick
+      handleNewPointButtonClick: this.#handleNewPointButtonClick
     });
     this.#newPointButtonComponent.setDisabled(true);
 
@@ -72,8 +67,8 @@ export default class TripPresenter {
       tripContainer: this.#tripComponent.element,
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel,
-      onDataChange: this.#handleViewAction,
-      onNewPointDestroy: this.#handleNewPointDestroy
+      handleDataChange: this.#handleViewAction,
+      handleNewPointDestroy: this.#handleNewPointDestroy
     });
   }
 
@@ -92,23 +87,9 @@ export default class TripPresenter {
     render(this.#newPointButtonComponent, this.#mainContainer);
   }
 
-  #handleNewPointButtonClick = () => {
-    this.#isCreating = true;
-    this.#currentSortType = SortTypes[DEFAULT_SORT_TYPE];
-    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#newPointButtonComponent.setDisabled(true);
-    this.#newPointPresenter.init();
-  };
-
-  #handleNewPointDestroy = () => {
-    this.#isCreating = false;
-    this.#newPointButtonComponent.setDisabled(false);
-    if (this.points.length === 0) {
-      remove(this.#sortComponent);
-      this.#sortComponent = null;
-      this.#renderMessage();
-    }
-  };
+  #renderTripContainer() {
+    render(this.#tripComponent, this.#tripContainer);
+  }
 
   #renderSort() {
     const prevSortComponent = this.#sortComponent;
@@ -124,10 +105,6 @@ export default class TripPresenter {
     } else {
       render(this.#sortComponent, this.#tripContainer, RenderPosition.AFTERBEGIN);
     }
-  }
-
-  #renderTripContainer() {
-    render(this.#tripComponent, this.#tripContainer);
   }
 
   #renderTrip() {
@@ -159,8 +136,8 @@ export default class TripPresenter {
       tripContainer: this.#tripComponent.element,
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel,
-      onDataChange: this.#handleViewAction,
-      onPointDisplayModeChange: this.#handlePointDisplayModeChange
+      handleDataChange: this.#handleViewAction,
+      handlePointDisplayModeChange: this.#handlePointDisplayModeChange
     });
 
     pointPresenter.init(point);
@@ -190,6 +167,24 @@ export default class TripPresenter {
       this.#currentSortType = SortTypes[DEFAULT_SORT_TYPE];
     }
   }
+
+  #handleNewPointButtonClick = () => {
+    this.#isCreating = true;
+    this.#currentSortType = SortTypes[DEFAULT_SORT_TYPE];
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#newPointButtonComponent.setDisabled(true);
+    this.#newPointPresenter.init();
+  };
+
+  #handleNewPointDestroy = () => {
+    this.#isCreating = false;
+    this.#newPointButtonComponent.setDisabled(false);
+    if (this.points.length === 0) {
+      remove(this.#sortComponent);
+      this.#sortComponent = null;
+      this.#renderMessage();
+    }
+  };
 
   #handleViewAction = async (actionType, updateType, update) => {
     this.#uiBlocker.block();
