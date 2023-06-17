@@ -129,24 +129,24 @@ export default class PointPresenter {
     this.#pointDisplayMode = PointDisplayMode.DEFAULT;
   }
 
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      this.#pointEditComponent.reset(this.#point);
-      this.#replaceFormToPoint();
-      document.removeEventListener('keydown', this.#escKeyDownHandler);
-    }
-  };
-
   #pointEditClickHandler = () => {
     this.#replacePointToForm();
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      this.#pointEditComponent.reset(this.#point);
+      document.removeEventListener('keydown', this.#escKeyDownHandler);
+      this.#replaceFormToPoint();
+    }
+  };
+
   #resetButtonClickHandler = () => {
     this.#pointEditComponent.reset(this.#point);
-    this.#replaceFormToPoint();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#replaceFormToPoint();
   };
 
   #favoriteClickHandler = () => {

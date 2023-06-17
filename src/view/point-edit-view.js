@@ -345,11 +345,11 @@ export default class PointEditView extends AbstractStatefulView {
     const chosenDestination = this.#allDestinations
       .find((destination) => destination.name === evt.target.value);
 
-    const chosenDestinationId = chosenDestination?.id || null;
-
-    this.updateElement({
-      destination: chosenDestinationId
-    });
+    if (chosenDestination) {
+      this.updateElement({
+        destination: chosenDestination.id
+      });
+    }
   };
 
   #pointDeleteClickHandler = (evt) => {
