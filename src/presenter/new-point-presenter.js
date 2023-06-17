@@ -1,23 +1,22 @@
+import PointEditView from '../view/point-edit-view.js';
+import {UserAction, UpdateType} from '../const.js';
 import {remove, render, RenderPosition} from '../framework/render.js';
-import EditPointView from '../view/edit-point-view.js';
-import {UserAction, UpdateType} from '../consts.js';
 
 export default class NewPointPresenter {
   #tripContainer = null;
+  #pointEditComponent = null;
   #offersModel = null;
   #destinationsModel = null;
   #handleDataChange = null;
   #handleNewPointDestroy = null;
 
-  #pointEditComponent = null;
-
   constructor({tripContainer, offersModel, destinationsModel,
-    onDataChange, onNewPointDestroy}) {
+    handleDataChange, handleNewPointDestroy}) {
     this.#tripContainer = tripContainer;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
-    this.#handleDataChange = onDataChange;
-    this.#handleNewPointDestroy = onNewPointDestroy;
+    this.#handleDataChange = handleDataChange;
+    this.#handleNewPointDestroy = handleNewPointDestroy;
   }
 
   init() {
@@ -25,12 +24,12 @@ export default class NewPointPresenter {
       return;
     }
 
-    this.#pointEditComponent = new EditPointView({
+    this.#pointEditComponent = new PointEditView({
       isNewPoint: true,
       allOffers: this.#offersModel.offers,
       allDestinations: this.#destinationsModel.destinations,
-      onFormSubmit: this.#handleFormSubmit,
-      onDeleteClick: this.#handleDeleteClick
+      handleFormSubmit: this.#formSubmitHandler,
+      handleDeleteClick: this.#deleteClickHandler
     });
 
     render(
@@ -73,7 +72,7 @@ export default class NewPointPresenter {
     this.#pointEditComponent.shake(resetFormState);
   }
 
-  #handleFormSubmit = (point) => {
+  #formSubmitHandler = (point) => {
     this.#handleDataChange(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
@@ -81,14 +80,14 @@ export default class NewPointPresenter {
     );
   };
 
-  #handleDeleteClick = () => {
-    this.destroyNewPoint();
+  #deleteClickHandler = () => {
+    this.destroy();
   };
 
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
-      this.destroyNewPoint();
+      this.destroy();
     }
   };
 }

@@ -1,4 +1,4 @@
-import {SortTypes} from '../consts.js';
+import {SortTypes} from '../const.js';
 import dayjs from 'dayjs';
 
 function getWeightForNullDate(dateA, dateB) {
@@ -33,10 +33,16 @@ function sortByPrice(pointA, pointB) {
   return pointB.basePrice - pointA.basePrice;
 }
 
+if (!Array.prototype.toSorted) {
+  Array.prototype.toSorted = function(fn) {
+    return [...this].sort(fn);
+  };
+}
+
 const sortPoints = {
-  [SortTypes.DAY]: (points) => points.sort(sortByDay),
-  [SortTypes.TIME]: (points) => points.sort(sortByTime),
-  [SortTypes.PRICE]: (points) => points.sort(sortByPrice),
+  [SortTypes.DAY]: (points) => points.toSorted(sortByDay),
+  [SortTypes.TIME]: (points) => points.toSorted(sortByTime),
+  [SortTypes.PRICE]: (points) => points.toSorted(sortByPrice),
   [SortTypes.EVENT]: () => {
     throw new Error('Sort by event is not implemented');
   },

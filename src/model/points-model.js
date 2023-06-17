@@ -1,5 +1,5 @@
 import Observable from '../framework/observable.js';
-import {UpdateType} from '../consts.js';
+import {UpdateType} from '../const.js';
 
 export default class PointsModel extends Observable {
   #points = [];
@@ -26,11 +26,11 @@ export default class PointsModel extends Observable {
       ]);
       const points = await this.#service.points;
       this.#points = points.map(this.#adaptToClient);
+      this._notify(UpdateType.INIT, {isError: false});
     } catch(err) {
       this.#points = [];
+      this._notify(UpdateType.INIT, {isError: true});
     }
-
-    this._notify(UpdateType.INIT);
   }
 
   async updatePoint(updateType, update) {

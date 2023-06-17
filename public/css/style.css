@@ -707,7 +707,7 @@ main {
   -webkit-transition: color 0.2s;
   transition: color 0.2s; }
   .event__favorite-btn:hover,
-  .event__favorite-btn:focus {
+  .event__favorite-btn:focus-visible {
     color: rgba(255, 208, 84, 0.6); }
   .event__favorite-btn--active {
     color: #ffd054;
